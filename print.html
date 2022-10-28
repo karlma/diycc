@@ -1,0 +1,1363 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>DIY CC</title>
+        <meta name="robots" content="noindex" />
+
+
+        <!-- Custom HTML head -->
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="从0到1搭建一个呼叫中心系统">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="前言.html"><strong aria-hidden="true">1.</strong> 前言</a></li><li class="chapter-item expanded "><a href="ch1/VoIP基础.html"><strong aria-hidden="true">2.</strong> VoIP基础</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch1/1-IP网络基础.html"><strong aria-hidden="true">2.1.</strong> IP网络基础</a></li><li class="chapter-item expanded "><a href="ch1/2-电话通信基础.html"><strong aria-hidden="true">2.2.</strong> 电话通信基础</a></li><li class="chapter-item expanded "><a href="ch1/3-VoIP.html"><strong aria-hidden="true">2.3.</strong> VoIP</a></li><li class="chapter-item expanded "><a href="ch1/4-SIP协议.html"><strong aria-hidden="true">2.4.</strong> SIP协议</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> 媒体网关</div></li></ol></li><li class="chapter-item expanded "><a href="ch2/FreeSWITCH.html"><strong aria-hidden="true">3.</strong> FreeSWITCH</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch2/4.1-编译.html"><strong aria-hidden="true">3.1.</strong> 编译&amp;运行</a></li><li class="chapter-item expanded "><a href="ch2/4.2-配置.html"><strong aria-hidden="true">3.2.</strong> 基本配置</a></li><li class="chapter-item expanded "><a href="ch2/4.3-分机.html"><strong aria-hidden="true">3.3.</strong> 分机</a></li><li class="chapter-item expanded "><a href="ch2/4.4-Dialplan.html"><strong aria-hidden="true">3.4.</strong> Dialplan</a></li><li class="chapter-item expanded "><a href="ch2/4.5-对接外线.html"><strong aria-hidden="true">3.5.</strong> 对接外线</a></li><li class="chapter-item expanded "><a href="ch2/4.6-Lua脚本.html"><strong aria-hidden="true">3.6.</strong> Lua脚本</a></li><li class="chapter-item expanded "><a href="ch2/4.7-三方和会议.html"><strong aria-hidden="true">3.7.</strong> 三方&amp;会议</a></li><li class="chapter-item expanded "><a href="ch2/4.8-视频.html"><strong aria-hidden="true">3.8.</strong> 视频</a></li></ol></li><li class="chapter-item expanded "><a href="ch3/5-呼叫中心.html"><strong aria-hidden="true">4.</strong> 呼叫中心</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">DIY CC</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="前言"><a class="header" href="#前言">前言</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第一章-voip基础"><a class="header" href="#第一章-voip基础">第一章 VoIP基础</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第一节-ip网络基础"><a class="header" href="#第一节-ip网络基础">第一节 IP网络基础</a></h1>
+<h2 id="tcpip-4层网络模型"><a class="header" href="#tcpip-4层网络模型">TCP/IP 4层网络模型</a></h2>
+<p><img src="ch1/./res/%E5%9B%9B%E5%B1%82%E6%A8%A1%E5%9E%8B.png" alt="images" /></p>
+<p><img src="ch1/./res/7%E5%B1%82%E5%8D%8F%E8%AE%AE.jpg" alt="images" /></p>
+<ol>
+<li><strong>物理层:</strong> 建立、维护、断开物理连接；</li>
+<li><strong>数据链路层:</strong> 建立逻辑连接、进行硬件地址寻址、差错校验等功能；</li>
+<li><strong>网络层:</strong> 进行逻辑地址寻址、实现不同网络之间的路径选择；</li>
+<li><strong>传输层:</strong> 定义传输数据得协议端口，以及流程和差错校验，协议有TCP、UDP，数据包一旦离开网卡即进入网络传输层；</li>
+<li><strong>会话层:</strong> 建立、管理、终止会话；</li>
+<li><strong>表示层:</strong> 数据的表示、安全、压缩；</li>
+<li><strong>应用层:</strong> 网络协议与最终用户得一个接口，协议有http ftp tftp smtp snmp dns telnet https pop3 dhcp。</li>
+</ol>
+<h2 id="arp"><a class="header" href="#arp">ARP</a></h2>
+<blockquote>
+<p>ARP(Address Resolution Protocol)地址解析协议，是用来将IP地址解析为MAC地址的协议。主机或三层网络设备上会维护一张ARP表，用于存储IP地址和MAC地址的映射关系，一般ARP表项包括动态ARP表项和静态ARP表项。</p>
+</blockquote>
+<blockquote>
+<p>动态ARP表项由ARP协议通过ARP报文自动生成和维护，可以被老化，可以被新的ARP报文更新，也可以被静态ARP表项覆盖。</p>
+</blockquote>
+<blockquote>
+<p>静态ARP表项是由网络管理员手工建立的IP地址和MAC地址之间固定的映射关系。静态ARP表项不会被老化，不会被动态ARP表项覆盖</p>
+</blockquote>
+<ul>
+<li>查看本机的ARP表的命令</li>
+</ul>
+<pre><code class="language-sh">arp -la
+</code></pre>
+<h2 id="icmp"><a class="header" href="#icmp">ICMP</a></h2>
+<blockquote>
+<p>Internet 控制消息协议 (ICMP) 是网络设备用来诊断网络通信问题的网络层协议。 ICMP 主要用于确定数据是否及时到达其预期目的地。通常，ICMP 协议用于网络设备，例如路由器。 ICMP 对于错误报告和测试至关重要，但它也可用于分布式拒绝服务 (DDoS) 攻击。</p>
+</blockquote>
+<blockquote>
+<p>与 Internet 协议 (IP) 不同，ICMP 不与 TCP 或 UDP 等传输层协议相关联。这使得 ICMP 成为无连接协议：一个设备在发送 ICMP 消息之前不需要打开与另一个设备的连接。正常的 IP 流量使用 TCP 发送，这意味着任何两个交换数据的设备都将首先执行 TCP 握手，以确保两个设备都准备好接收数据。 ICMP 不会以这种方式打开连接。 ICMP 协议也不允许针对设备上的特定端口。</p>
+</blockquote>
+<ul>
+<li>ICMP数据包</li>
+</ul>
+<p><img src="ch1/./res/icmp%E5%8C%85.png" alt="images" /></p>
+<ul>
+<li>发送ICMP的命令</li>
+</ul>
+<pre><code class="language-sh">ping
+</code></pre>
+<h2 id="tcp"><a class="header" href="#tcp">TCP</a></h2>
+<ul>
+<li>三次握手&amp;四次挥手</li>
+</ul>
+<p><img src="ch1/./res/TCP%E7%9A%84%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.jpeg" alt="images" /></p>
+<ul>
+<li>三次握手数据包</li>
+</ul>
+<p><img src="ch1/./res/tcp-package-1.png" alt="images" /></p>
+<ul>
+<li>四次挥手数据包</li>
+</ul>
+<p><img src="ch1/./res/tcp-package-2.png" alt="images" /></p>
+<h2 id="rtp"><a class="header" href="#rtp">RTP</a></h2>
+<p><img src="ch1/./res/rtp%E5%8C%85.png" alt="images" /></p>
+<h2 id="问题"><a class="header" href="#问题">问题</a></h2>
+<ol>
+<li>以下协议分别哪一层的协议？</li>
+</ol>
+<ul>
+<li>TCP</li>
+<li>UDP</li>
+<li>HTTP</li>
+<li>HTTPS</li>
+<li>SSH</li>
+<li>SIP</li>
+<li>RTP</li>
+</ul>
+<ol start="2">
+<li>这些协议默认端口是什么？</li>
+</ol>
+<ul>
+<li>HTTP</li>
+<li>HTTPS</li>
+<li>TELNET</li>
+<li>SSH</li>
+<li>FTP</li>
+<li>SMTP</li>
+<li>POP3</li>
+<li>IMAP</li>
+<li>MySQL</li>
+<li>SIP</li>
+<li>TCP</li>
+<li>UDP</li>
+</ul>
+<ol start="3">
+<li>路由器和交换机分别在哪一层工作？</li>
+</ol>
+<hr />
+<p><strong>参考链接:</strong></p>
+<ul>
+<li><a href="https://www.guru99.com/tcp-ip-model.html">参考链接-1</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/TCP/IP%E5%8D%8F%E8%AE%AE%E6%97%8F">参考链接-2</a></li>
+<li><a href="https://info.support.huawei.com/info-finder/encyclopedia/zh/ARP.html">参考链接-3</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/422381485">参考链接-4</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第二节-电话通信基础"><a class="header" href="#第二节-电话通信基础">第二节 电话通信基础</a></h1>
+<h2 id="三层网"><a class="header" href="#三层网">三层网</a></h2>
+<ul>
+<li>核心网（核心层）</li>
+<li>承载网（汇聚层）</li>
+<li>接入网（接入层）</li>
+</ul>
+<p><img src="ch1/./res/%E6%97%A0%E7%BA%BF%E7%94%B5%E8%AF%9D-3.jpeg" alt="无线电话网" /></p>
+<h2 id="无线电话"><a class="header" href="#无线电话">无线电话</a></h2>
+<ul>
+<li>基站
+<ul>
+<li>RF天线</li>
+<li>RRU：远端射频单元，主要负责射频处理</li>
+<li>BBU：基带处理单元，主要负责信号调制</li>
+</ul>
+</li>
+<li>LTE：长期演进</li>
+<li>VoLTE：Voice over LTE</li>
+<li>GSM: 全球移动通信系统</li>
+<li>CDMA: 码分多址</li>
+</ul>
+<p><img src="ch1/./res/%E6%97%A0%E7%BA%BF%E7%94%B5%E8%AF%9D.jpeg" alt="无线电话网" />
+<img src="ch1/./res/%E6%97%A0%E7%BA%BF%E7%94%B5%E8%AF%9D-2.jpeg" alt="无线电话网" /></p>
+<h2 id="有线电话"><a class="header" href="#有线电话">有线电话</a></h2>
+<ul>
+<li>DLC: 数据环路载波</li>
+<li>调制/解调：PCM（脉冲编码调制）</li>
+</ul>
+<p><img src="ch1/./res/pcm.jpeg" alt="PCM" /></p>
+<ul>
+<li>E1/T1：SS1/SS7/ISDN PRI</li>
+<li>PBX：程控交换机</li>
+<li>PSTN：公共交换电话网络</li>
+</ul>
+<p><img src="ch1/./res/%E6%9C%89%E7%BA%BF%E7%94%B5%E8%AF%9D.jpeg" alt="有线电话网" /></p>
+<h2 id="问题-1"><a class="header" href="#问题-1">问题</a></h2>
+<ol>
+<li>什么是调制解调？</li>
+<li>分组交换与电路交换的区别是什么？</li>
+<li>PCM是什么意思？</li>
+<li>PSTN是什么意思？</li>
+<li>PBX是什么意思？</li>
+<li>SS1/SS7/ISDN PRI是什么意思？</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第三节-voip"><a class="header" href="#第三节-voip">第三节 VoIP</a></h1>
+<h2 id="voice-over-internet-protocol"><a class="header" href="#voice-over-internet-protocol">Voice over Internet Protocol</a></h2>
+<p><img src="ch1/./res/voip.jpeg" alt="VoIP" /></p>
+<blockquote>
+<p>Voice over Internet Protocol (VoIP), also called IP telephony, is a method and group of technologies for the delivery of voice communications and multimedia sessions over Internet Protocol (IP) networks, such as the Internet. The terms Internet telephony, broadband telephony, and broadband phone service specifically refer to the provisioning of communications services (voice, fax, SMS, voice-messaging) over the Internet, rather than via the public switched telephone network (PSTN), also known as plain old telephone service (POTS).</p>
+</blockquote>
+<h2 id="voip协议做什么"><a class="header" href="#voip协议做什么">VoIP协议做什么</a></h2>
+<ul>
+<li>网络传输</li>
+<li>会话管理</li>
+<li>信号：注册/发现、拨号、能力协商、呼叫控制、DTMF</li>
+<li>媒体：媒体描述（类型、编解码）</li>
+</ul>
+<h2 id="常见的voip协议"><a class="header" href="#常见的voip协议">常见的VoIP协议</a></h2>
+<ul>
+<li>SIP(IETF)</li>
+<li>H.323(ITU)</li>
+<li>MGCP</li>
+<li>H.248</li>
+<li>RTP</li>
+<li>RTCP</li>
+<li>SRTP</li>
+<li>SDP</li>
+<li>Jingle: XMPP</li>
+<li>Skype</li>
+</ul>
+<h2 id="语音编码"><a class="header" href="#语音编码">语音编码</a></h2>
+<ul>
+<li>PCMA：A-law </li>
+<li>PCMU：μ-law</li>
+<li>G.711：64K bit/s</li>
+<li>G.729：8K</li>
+<li>G.723.1：5.3K, 6.3K</li>
+<li>ARM-WB：6.60-23.85</li>
+<li>ARM(ARM-NB)：4.75-12.2</li>
+</ul>
+<h2 id="视频编码"><a class="header" href="#视频编码">视频编码</a></h2>
+<ul>
+<li>H.263</li>
+<li>H.246</li>
+<li>V8</li>
+<li>V9</li>
+</ul>
+<h2 id="问题-2"><a class="header" href="#问题-2">问题</a></h2>
+<ol>
+<li>编解码是什么意思？有哪些常用的编解码？</li>
+<li>DTMF是什么意思？</li>
+<li>VoIP常用的协议有哪些？完成什么功能？ </li>
+<li>VoIP与PSTN比有什么优点？有什么缺点？</li>
+<li>VoIP都能做什么？</li>
+</ol>
+<hr />
+<p><strong>参考链接</strong></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Voice_over_IP">参考链接-1</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第四节-sip协议"><a class="header" href="#第四节-sip协议">第四节 SIP协议</a></h1>
+<h2 id="sip定义"><a class="header" href="#sip定义">SIP定义</a></h2>
+<blockquote>
+<p>The Session Initiation Protocol (SIP) is a signaling protocol used for initiating, maintaining, and terminating communication sessions that include voice, video and messaging applications.</p>
+</blockquote>
+<blockquote>
+<p>SIP is used in Internet telephony, in private IP telephone systems, as well as mobile phone calling over LTE (VoLTE).</p>
+</blockquote>
+<blockquote>
+<p>The protocol defines the specific format of messages exchanged and the sequence of communications for cooperation of the participants. SIP is a text-based protocol, incorporating many elements of the Hypertext Transfer Protocol (HTTP) and the Simple Mail Transfer Protocol (SMTP). </p>
+</blockquote>
+<blockquote>
+<p>A call established with SIP may consist of multiple media streams, but no separate streams are required for applications, such as text messaging, that exchange data as payload in the SIP message.</p>
+</blockquote>
+<ul>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc2543">RFC 2543</a></p>
+</li>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc3261">RFC 3261</a></p>
+</li>
+<li>
+<p>例子</p>
+</li>
+</ul>
+<pre><code>INVITE sip:9171959@112.97.160.199:42051;transport=udp SIP/2.0
+Via: SIP/2.0/UDP 47.100.223.119:5474;rport;branch=z9hG4bK7SB00gXrv4pQp
+Route: &lt;sip:139.224.80.27:5474&gt;;lr;received=sip:112.97.160.199:42051
+Max-Forwards: 70
+From: &quot;188xxxx7678&quot; &lt;sip:188xxxx7678@kcc1.s2.udesk.cn&gt;;tag=r74jSZy64ZZ4r
+To: &lt;sip:9171959@112.97.160.199:42051;transport=udp&gt;
+Call-ID: 290be5c2-b7ef-123b-26b0-00163e004ba5
+CSeq: 57527883 INVITE
+Contact: &lt;sip:mod_sofia@47.100.223.119:5474&gt;
+User-Agent: FreeSWITCH-mod_sofia/1.6.20~64bit
+Allow: INVITE, ACK, BYE, CANCEL, OPTIONS, MESSAGE, INFO, UPDATE, REGISTER, REFER, NOTIFY, PUBLISH, SUBSCRIBE
+Supported: timer, path, replaces
+Allow-Events: talk, hold, conference, presence, as-feature-event, dialog, line-seize, call-info, sla, include-session-description, presence.winfo, message-summary, refer
+Content-Type: application/sdp
+Content-Disposition: session
+Content-Length: 272
+Remote-Party-ID: &quot;188xxxx7678&quot; &lt;sip:188xxxx7678@kcc1.s2.udesk.cn&gt;;party=calling;screen=yes;privacy=off
+</code></pre>
+<ul>
+<li>说明</li>
+</ul>
+<pre><code>INVITE: 方法，URI, 版本
+Via: 请求通过的路径，响应时也要通过这些路径
+Route: lr 宽松路由
+Max-Forwards: 最大转接数
+From：
+To：
+Call-ID:
+CSeq:
+Contact:
+User-Agent:
+Allow:
+Supported:
+Allow-Events:
+Content-Type:
+Content-Disposition:
+Remote-Party-ID:
+</code></pre>
+<h2 id="sip网络元素"><a class="header" href="#sip网络元素">SIP网络元素</a></h2>
+<ul>
+<li>User Agent</li>
+<li>Proxy Server</li>
+<li>Registar Server</li>
+<li>Gateway</li>
+<li>SBC(Session border controller)</li>
+</ul>
+<h2 id="sip消息和响应"><a class="header" href="#sip消息和响应">SIP消息和响应</a></h2>
+<ul>
+<li>
+<p>REGISTER</p>
+</li>
+<li>
+<p>INVITE</p>
+</li>
+<li>
+<p>ACK</p>
+</li>
+<li>
+<p>BYE</p>
+</li>
+<li>
+<p>CANCEL</p>
+</li>
+<li>
+<p>REFER</p>
+</li>
+<li>
+<p>INFO</p>
+</li>
+<li>
+<p>OPTIONS</p>
+</li>
+<li>
+<p>1xx：Provisional Responses</p>
+<ul>
+<li>100: Trying</li>
+<li>180: Ringing</li>
+<li>183: Session Progress</li>
+</ul>
+</li>
+<li>
+<p>2xx: Successful Responses</p>
+<ul>
+<li>200 OK</li>
+</ul>
+</li>
+<li>
+<p>3xx: Redirection Responses</p>
+<ul>
+<li>302 Moved Temporarily</li>
+</ul>
+</li>
+<li>
+<p>4xx: Client Failure Responses</p>
+<ul>
+<li>401: Unauthorized</li>
+<li>403: Forbidden</li>
+<li>404: Not Found</li>
+<li>408: Request Timeout</li>
+<li>480: Temporarily Unavailable</li>
+</ul>
+</li>
+<li>
+<p>5xx: Server Failure Responses</p>
+</li>
+<li>
+<p>6xx: Global Failure Responses</p>
+</li>
+</ul>
+<h2 id="sdp"><a class="header" href="#sdp">SDP</a></h2>
+<blockquote>
+<p>The Session Description Protocol (SDP) is a format for describing multimedia communication sessions for the purposes of announcement and invitation. Its predominant use is in support of streaming media applications, such as voice over IP (VoIP) and video conferencing. SDP does not deliver any media streams itself but is used between endpoints for negotiation of network metrics, media types, and other associated properties. The set of properties and parameters is called a session profile.</p>
+</blockquote>
+<ul>
+<li>例子</li>
+</ul>
+<pre><code>v=0
+o=FreeSWITCH 1664145433 1664145434 IN IP4 47.100.223.119
+s=FreeSWITCH
+c=IN IP4 47.100.223.119
+t=0 0
+m=audio 17918 RTP/AVP 8 0 101 13
+a=rtpmap:8 PCMA/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-16
+a=rtpmap:13 CN/8000
+a=ptime:20
+</code></pre>
+<ul>
+<li>说明</li>
+</ul>
+<pre><code>v=  协议版本
+o=  发起方：&lt;username&gt; &lt;sess-id&gt; &lt;sess-version&gt; &lt;nettype&gt; &lt;addrtype&gt; &lt;unicast-address&gt;
+s=  会话名称
+c=  连接信息 &lt;nettype&gt; &lt;addrtype&gt; &lt;unicast-address&gt;
+t=  计时信息：&lt;start-time&gt; &lt;stop-time&gt;：都是0代表永久
+m=  媒体信息：&lt;media&gt; &lt;port&gt; &lt;proto&gt; &lt;fmt&gt;
+a=  属性
+</code></pre>
+<h2 id="ims"><a class="header" href="#ims">IMS</a></h2>
+<blockquote>
+<p>The IP Multimedia Subsystem or IP Multimedia Core Network Subsystem (IMS) is a standardised architectural framework for delivering IP multimedia services. Historically, mobile phones have provided voice call services over a circuit-switched-style network, rather than strictly over an IP packet-switched network. Alternative methods of delivering voice (VoIP) or other multimedia services have become available on smartphones, but they have not become standardized across the industry.IMS is an architectural framework that provides such standardization.</p>
+</blockquote>
+<ul>
+<li>3GPP: 第三代合作伙伴项目，开发移动通信协议标准的一个组织；</li>
+</ul>
+<h2 id="sip消息分析工具"><a class="header" href="#sip消息分析工具">SIP消息分析工具</a></h2>
+<ul>
+<li>sngrep:</li>
+<li>sipcapture:</li>
+<li>tcpdump,wireshark</li>
+</ul>
+<h2 id="问题-3"><a class="header" href="#问题-3">问题</a></h2>
+<ul>
+<li>SIP协议是哪一层的协议？</li>
+<li>SIP协议用的是什么传输协议？</li>
+<li>SIP协议可以传输文本消息吗？</li>
+<li>SIP网络里都有哪些元素？</li>
+<li>REGISTER消息返回401说明什么？</li>
+<li>INVITE消息返回408说明什么</li>
+<li>SIP协议的RFC版本是什么？</li>
+<li>SBC在SIP网络里有什么用？</li>
+<li>Gateway在SIP网络里有会用？</li>
+<li>能力协商过程是什么样的？</li>
+<li>为什么iptables已经封了的IP地址，在sngrep里还能看到？</li>
+</ul>
+<hr />
+<p><strong>参考链接</strong></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Session_Initiation_Protocol">参考链接-1</a></li>
+<li><a href="https://en.wikipedia.org/wiki/List_of_SIP_response_codes#4xx%E2%80%94Client_Failure_Responses">参考链接-2</a></li>
+<li><a href="https://en.wikipedia.org/wiki/IP_Multimedia_Subsystem">参考链接-3</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Session_Description_Protocol">参考链接-4</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc4566">参考链接-5</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc2543">参考链接-6</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc3261">参考链接-7</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第二章-freeswitch"><a class="header" href="#第二章-freeswitch">第二章 FreeSWITCH</a></h1>
+<h2 id="版本"><a class="header" href="#版本">版本</a></h2>
+<ul>
+<li>FreeSWITCH与Asterisk</li>
+<li>2008年 1.0版本</li>
+<li>最近的稳定版：1.15.9</li>
+</ul>
+<h2 id="特点"><a class="header" href="#特点">特点</a></h2>
+<ul>
+<li>高呼叫并发数</li>
+<li>高稳定性</li>
+<li>近乎完备的功能</li>
+<li>灵活的配置</li>
+<li>功能强大的FSAPI</li>
+<li>支持多种语言开发</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第一节-编译运行"><a class="header" href="#第一节-编译运行">第一节 编译&amp;运行</a></h1>
+<h2 id="环境准备"><a class="header" href="#环境准备">环境准备</a></h2>
+<h3 id="docker环境"><a class="header" href="#docker环境">docker环境</a></h3>
+<ul>
+<li>安装docker</li>
+</ul>
+<p><img src="ch2/./res/docker.png" alt="images" /></p>
+<ul>
+<li>安装portainer</li>
+</ul>
+<p><img src="ch2/./res/portainer.png" alt="images" /></p>
+<h3 id="创建操作系统docker镜像"><a class="header" href="#创建操作系统docker镜像">创建操作系统docker镜像</a></h3>
+<ul>
+<li>Dockerfile：&quot;ubuntu-base:20.04&quot;</li>
+</ul>
+<pre><code class="language-shell">FROM       amd64/ubuntu:20.04
+MAINTAINER Karl Ma
+
+# Change sourcelist to aliyun
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list &amp;&amp; \
+    sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+RUN apt update
+
+# locale
+RUN apt install -y locales
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG=en_US.utf8
+
+# timezone
+RUN DEBIAN_FRONTEND=noninteractive apt install -yq tzdata
+RUN ln -fs /usr/share/zoneinfo/Asia/Harbin /etc/localtime &amp;&amp; \
+    dpkg-reconfigure -f noninteractive tzdata
+ENV TZ=&quot;Asia/Harbin&quot;
+
+# vim
+RUN apt install -y vim \
+    iputils-ping \
+    net-tools \
+    git
+
+
+# clear apt cache
+RUN rm -rf /var/lib/apt/lists/*
+</code></pre>
+<ul>
+<li>build</li>
+</ul>
+<pre><code class="language-shell">docker build --platform linux/x86_64 -t ubuntu-base:20.04 .
+</code></pre>
+<h3 id="创建编译环境docker镜像"><a class="header" href="#创建编译环境docker镜像">创建编译环境docker镜像</a></h3>
+<ul>
+<li>Dockerfile：&quot;fs-dev:1.10.7-1&quot;</li>
+</ul>
+<pre><code class="language-bash">FROM karlma/ubuntu-base:20.04
+
+MAINTAINER Karl Ma
+ENV REFRESHED_AT 2022-08-16
+
+RUN apt-get update &amp;&amp; apt-get install -y \
+    autoconf \
+    cmake \
+    g++ \
+    libcurl4-openssl-dev \
+    libedit-dev \
+    libjpeg-dev \
+    libldns-dev \
+    liblua5.2-dev \
+    libmp3lame-dev \
+    libmpg123-dev \
+    libncurses5-dev \
+    libopus-dev \
+    libpcap-dev \
+    libpcre3-dev \
+    libsctp-dev \
+    libshout3-dev \
+    libsndfile1-dev \
+    libspeex-dev \
+    libspeexdsp-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    libtiff-dev \
+    libtiff-dev \
+    libtool-bin \
+    libmariadb-dev \
+    mariadb-client \
+    lua5.2 \
+    make \
+    unixodbc-dev \
+    uuid-dev \
+    yasm \
+    zlib1g-dev \
+    curl \
+    telnet \
+	&amp;&amp; rm -rf /var/lib/apt/lists/*
+
+VOLUME /usr/local/freeswitch
+
+WORKDIR /usr/local/freeswitch
+</code></pre>
+<ul>
+<li>build</li>
+</ul>
+<pre><code class="language-shell">docker build --platform linux/x86_64 -t fs-dev:1.10.7-1 .
+</code></pre>
+<h3 id="获取源代码"><a class="header" href="#获取源代码">获取源代码</a></h3>
+<ul>
+<li>获取FreeSWITCH源码</li>
+</ul>
+<pre><code class="language-bash">git clone -b v1.10.7 https://github.com/signalwire/freeswitch.git
+</code></pre>
+<ul>
+<li>获取sofia源码</li>
+</ul>
+<pre><code class="language-bash">cd /usr/local/src/freeswitch #在freeswitch源码目录下
+git clone https://github.com/freeswitch/sofia-sip.git
+</code></pre>
+<ul>
+<li>获取spandsp源码</li>
+</ul>
+<pre><code class="language-bash">cd /usr/local/src/freeswitch
+git clone https://github.com/freeswitch/spandsp.git
+</code></pre>
+<h2 id="编译sofia和spandsp"><a class="header" href="#编译sofia和spandsp">编译sofia和spandsp</a></h2>
+<ul>
+<li>启动容器</li>
+</ul>
+<pre><code class="language-bash">docker run -it -v 本地源码目录:/usr/local/src/freeswitch -v 本地安装目录:/usr/local/freeswitch fs-dev:1.10.7-1 /bin/bash
+</code></pre>
+<ul>
+<li>编译sofia</li>
+</ul>
+<pre><code class="language-bash">cd sofia-sip
+./bootstrap.sh -j
+./configure --prefix=/usr/local/freeswitch
+make
+make install
+ldconfig -p
+</code></pre>
+<blockquote>
+<p>安装完成在下面目录中</p>
+</blockquote>
+<pre><code class="language-bash">/usr/local/freeswitch/lib/libsofia-sip-ua*
+/usr/local/freeswitch/lib/pkconfig/sofia-sip-ua.pc
+
+/usr/local/freeswitch/include/sofia-sip-1.13
+</code></pre>
+<ul>
+<li>编译spandsp</li>
+</ul>
+<pre><code class="language-bash">cd spandsp/
+./bootstrap.sh -j
+./configure  --prefix=/usr/local/freeswitch
+make
+make install
+ldconfig -p
+</code></pre>
+<blockquote>
+<p>安装完成后在下面目录中</p>
+</blockquote>
+<pre><code class="language-bash">/usr/local/freeswitch/lib/libspandsp*
+/usr/local/freeswitch/include/spandsp
+/usr/local/freeswitch/include/spandsp.h
+</code></pre>
+<ul>
+<li>export PKG_CONFIG_PATH</li>
+</ul>
+<pre><code>export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/freeswitch/lib/pkgconfig
+</code></pre>
+<ul>
+<li>ldconfig</li>
+</ul>
+<pre><code class="language-bash">echo &quot;/usr/local/freeswitch/lib&quot; &gt; /etc/ld.so.conf.d/freeswitch.conf
+ldconfig
+ldconfig -p|grep sofia
+ldconfig -p|grep spandsp
+</code></pre>
+<h2 id="编译freeswitch"><a class="header" href="#编译freeswitch">编译freeswitch</a></h2>
+<pre><code>cd /usr/local/src/freeswitch
+./bootstrap.sh -j
+</code></pre>
+<ul>
+<li>修改modules.conf</li>
+</ul>
+<pre><code>applications/mod_commands
+applications/mod_conference
+applications/mod_curl
+applications/mod_db
+applications/mod_directory
+applications/mod_distributor
+applications/mod_dptools
+applications/mod_easyroute
+applications/mod_expr
+applications/mod_fifo
+applications/mod_hash
+applications/mod_httapi
+applications/mod_http_cache
+asr_tts/mod_unimrcp
+codecs/mod_opus
+dialplans/mod_dialplan_xml
+endpoints/mod_loopback
+endpoints/mod_rtc
+endpoints/mod_sofia
+event_handlers/mod_cdr_sqlite
+event_handlers/mod_event_socket
+formats/mod_local_stream
+formats/mod_native_file
+formats/mod_sndfile
+formats/mod_tone_stream
+languages/mod_lua
+loggers/mod_console
+loggers/mod_logfile
+loggers/mod_syslog
+say/mod_say_en
+say/mod_say_zh
+xml_int/mod_xml_curl
+</code></pre>
+<ul>
+<li>configure</li>
+</ul>
+<pre><code>./configure --enable-core-odbc-support 
+</code></pre>
+<blockquote>
+<p>目录结构</p>
+</blockquote>
+<pre><code>  Locations:
+
+      prefix:          /usr/local/freeswitch
+      exec_prefix:     /usr/local/freeswitch
+      bindir:          ${exec_prefix}/bin
+      confdir:         /usr/local/freeswitch/conf
+      libdir:          ${exec_prefix}/lib
+      datadir:         /usr/local/freeswitch
+      localstatedir:   /usr/local/freeswitch
+      includedir:      /usr/local/freeswitch/include/freeswitch
+
+      certsdir:        /usr/local/freeswitch/certs
+      dbdir:           /usr/local/freeswitch/db
+      grammardir:      /usr/local/freeswitch/grammar
+      htdocsdir:       /usr/local/freeswitch/htdocs
+      fontsdir:        /usr/local/freeswitch/fonts
+      logfiledir:      /usr/local/freeswitch/log
+      modulesdir:      /usr/local/freeswitch/mod
+      pkgconfigdir:    ${exec_prefix}/lib/pkgconfig
+      recordingsdir:   /usr/local/freeswitch/recordings
+      imagesdir:       /usr/local/freeswitch/images
+      runtimedir:      /usr/local/freeswitch/run
+      scriptdir:       /usr/local/freeswitch/scripts
+      soundsdir:       /usr/local/freeswitch/sounds
+      storagedir:      /usr/local/freeswitch/storage
+      cachedir:        /usr/local/freeswitch/cache
+</code></pre>
+<ul>
+<li>make install</li>
+</ul>
+<pre><code class="language-bash">make
+make install
+</code></pre>
+<h2 id="docker启动freeswitch"><a class="header" href="#docker启动freeswitch">docker启动freeswitch</a></h2>
+<ul>
+<li>
+<p>docker网络尽量使用用host模式</p>
+</li>
+<li>
+<p>Dockerfile</p>
+</li>
+</ul>
+<pre><code class="language-bash">FROM karlma/ubuntu-base:20.04
+
+MAINTAINER Karl Ma
+ENV REFRESHED_AT 2022-08-16
+
+RUN groupadd -r freeswitch --gid=999 &amp;&amp; useradd -r -g freeswitch --uid=999 freeswitch
+
+RUN apt-get update &amp;&amp; apt-get install -y \
+    libcurl4-openssl-dev \
+    libedit-dev \
+    libjpeg-dev \
+    libldns-dev \
+    liblua5.2 \
+    libmp3lame-dev \
+    libmpg123-dev \
+    libncurses5 \
+    libopus-dev \
+    libpcap-dev \
+    libpcre3 \
+    libsctp-dev \
+    libshout3 \
+    libsndfile1 \
+    libspeex-dev \
+    libspeexdsp-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    libtiff-dev \
+    libtool-bin \
+    lua5.2 \
+    unixodbc \
+    uuid \
+    zlib1g \
+    curl \
+    telnet \
+    libmariadb-dev \
+    mariadb-client \
+    sngrep \
+    gosu
+
+RUN apt autoremove
+RUN apt clean &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+
+ENV FS_SBC_BASE freeswitch # 编译安装的目标
+ENV DEPLOY_BASE deploy # 相关脚本目标
+
+# Limits Configuration
+COPY ${DEPLOY_BASE}/freeswitch.limits.conf /etc/security/limits.d/
+
+COPY ${DEPLOY_BASE}/docker-entrypoint.sh /
+
+
+RUN mkdir -p /usr/local/freeswitch
+
+COPY ${FS_SBC_BASE}/bin /usr/local/freeswitch/bin
+COPY ${FS_SBC_BASE}/certs /usr/local/freeswitch/certs
+COPY ${FS_SBC_BASE}/fonts /usr/local/freeswitch/fonts
+COPY ${FS_SBC_BASE}/lib /usr/local/freeswitch/lib
+COPY ${FS_SBC_BASE}/mod /usr/local/freeswitch/mod
+COPY ${FS_SBC_BASE}/recordings /usr/local/freeswitch/recordings
+COPY ${FS_SBC_BASE}/share /usr/local/freeswitch/share
+COPY ${FS_SBC_BASE}/sounds /usr/local/freeswitch/sounds
+COPY ${FS_SBC_BASE}/storage /usr/local/freeswitch/storage
+
+RUN mkdir -p /usr/local/freeswitch/db
+RUN mkdir -p /usr/local/freeswitch/run
+
+RUN mkdir -p /var/log/freeswitch
+RUN ln -s /var/log/freeswitch /usr/local/freeswitch/log
+
+
+SHELL       [&quot;/bin/bash&quot;]
+HEALTHCHECK --interval=15s --timeout=5s \
+     CMD  /usr/local/freeswitch/bin/fs_cli -x status | grep -q ^UP || exit 1
+
+# xml rpc
+EXPOSE 7744/tcp
+
+# sip
+EXPOSE 7854/udp
+EXPOSE 7854/tcp
+EXPOSE 8891/udp
+EXPOSE 8891/tcp
+
+# rtp
+EXPOSE 16384-17185/udp
+
+
+WORKDIR /usr/local/freeswitch
+
+VOLUME /usr/local/freeswitch/conf
+VOLUME /usr/local/freeswitch/scripts
+VOLUME /var/log/freeswitch
+
+
+ENTRYPOINT [&quot;/docker-entrypoint.sh&quot;]
+
+CMD [&quot;freeswitch&quot;]
+</code></pre>
+<ul>
+<li>deploy/freeswitch.limits.conf文件</li>
+</ul>
+<pre><code class="language-bash">freeswitch       soft    core            unlimited
+freeswitch       soft    data            unlimited
+freeswitch       soft    fsize           unlimited
+freeswitch       soft    memlock         unlimited
+freeswitch       soft    nofile          999999
+freeswitch       soft    rss             unlimited
+freeswitch       hard    stack           240
+freeswitch       soft    cpu             unlimited
+freeswitch       soft    nproc           unlimited
+freeswitch       soft    as              unlimited
+freeswitch       soft    priority        -11
+freeswitch       soft    locks           unlimited
+freeswitch       soft    sigpending      unlimited
+freeswitch       soft    msgqueue        unlimited
+freeswitch       soft    nice            -11
+</code></pre>
+<ul>
+<li>启动脚本deploy/docker-entrypoint.sh</li>
+</ul>
+<pre><code class="language-bash">#!/bin/bash
+set -e # 运行出错即可退出
+
+if [ &quot;$1&quot; = 'freeswitch' ]; then
+
+    chown -R freeswitch:freeswitch /usr/local/freeswitch
+    chown -R freeswitch:freeswitch /var/log/freeswitch
+
+    if [ -d /docker-entrypoint.d ]; then
+        for f in /docker-entrypoint.d/*.sh; do
+            [ -f &quot;$f&quot; ] &amp;&amp; . &quot;$f&quot;
+        done
+    fi
+    
+    exec gosu freeswitch /usr/local/freeswitch/bin/freeswitch -u freeswitch -g freeswitch -nonat -c
+
+fi
+
+exec &quot;$@&quot; # 执行非freeswitch命令
+</code></pre>
+<h2 id="问题-4"><a class="header" href="#问题-4">问题</a></h2>
+<ul>
+<li>自己动手做一遍，输出一个FreeSWITCH的docker镜像</li>
+<li>系统启动后，注册一个分机，拨9196，测试一下echo</li>
+<li>FreeSWITCH的启动参数-nonat是什么意思，-nc,ncwait是什么意思？</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第二节-基本配置"><a class="header" href="#第二节-基本配置">第二节 基本配置</a></h1>
+<h2 id="xml"><a class="header" href="#xml">XML</a></h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!-- comment here --&gt;
+&lt;note&gt;
+	&lt;from user=&quot;John&quot; id=&quot;1234&quot;&gt;John&lt;/from&gt;
+	&lt;to user=&quot;Bob&quot; id=&quot;5678&quot;&gt;George&lt;/to&gt;
+	&lt;heading&gt;Reminder&lt;/heading&gt;
+	&lt;body&gt;Don't forget the meeting!&lt;/body&gt;
+&lt;/note&gt;
+</code></pre>
+<ul>
+<li>声明</li>
+<li>元素：树形结构，root, item</li>
+<li>属性</li>
+<li>注释</li>
+<li>大小写敏感</li>
+</ul>
+<h2 id="freeswitch特有的解析方式"><a class="header" href="#freeswitch特有的解析方式">FreeSWITCH特有的解析方式</a></h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+ &lt;document type=&quot;freeswitch/xml&quot;&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;vars.xml&quot;/&gt;
+ 
+   &lt;section name=&quot;configuration&quot; description=&quot;Various Configuration&quot;&gt;
+     &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;autoload_configs/*.xml&quot;/&gt;
+   &lt;/section&gt;
+ 
+   &lt;section name=&quot;dialplan&quot; description=&quot;Regex/XML Dialplan&quot;&gt;
+     &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;dialplan/*.xml&quot;/&gt;
+   &lt;/section&gt;
+ &lt;/document&gt;
+</code></pre>
+<ul>
+<li>预处理：X-PRE-PROCESS</li>
+</ul>
+<blockquote>
+<p>注意：预处理的注释失效，想要注释的话，换成X-NO-PRE-PROCESS</p>
+</blockquote>
+<ul>
+<li>cmd=&quot;include&quot;</li>
+</ul>
+<h2 id="配置文件结构"><a class="header" href="#配置文件结构">配置文件结构</a></h2>
+<ul>
+<li>minimal</li>
+</ul>
+<p><img src="ch2/./res/conf_minimal.png" alt="images" /></p>
+<ul>
+<li>vanilla(default)</li>
+</ul>
+<p><img src="ch2/./res/fs_default_config.jpeg" alt="images" /></p>
+<h2 id="重点说明"><a class="header" href="#重点说明">重点说明</a></h2>
+<ul>
+<li>freeswitch.xml</li>
+</ul>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+ &lt;document type=&quot;freeswitch/xml&quot;&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;vars.xml&quot;/&gt;
+ 
+   &lt;section name=&quot;configuration&quot; description=&quot;Various Configuration&quot;&gt;
+     &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;autoload_configs/*.xml&quot;/&gt;
+   &lt;/section&gt;
+ 
+   &lt;section name=&quot;dialplan&quot; description=&quot;Regex/XML Dialplan&quot;&gt;
+     &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;dialplan/*.xml&quot;/&gt;
+   &lt;/section&gt;
+ &lt;/document&gt;
+</code></pre>
+<blockquote>
+<p>freeswitch.xml.fsxml,	<strong>不要直接编辑这个文件</strong></p>
+</blockquote>
+<ul>
+<li>vars.xml</li>
+</ul>
+<pre><code class="language-xml"> &lt;include&gt; &lt;!-- 注意这里 --&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;set&quot; data=&quot;global_codec_prefs=PCMU,PCMA&quot;/&gt;
+ 
+   &lt;!-- NOTE: CHANGE THIS BEFORE USE --&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;set&quot; data=&quot;xml_rpc_password=worksnot&quot;/&gt;
+ 
+   &lt;X-PRE-PROCESS cmd=&quot;set&quot; data=&quot;internal_sip_port=5060&quot;/&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;set&quot; data=&quot;external_sip_port=5080&quot;/&gt;
+ &lt;/include&gt;
+</code></pre>
+<ul>
+<li>
+<p>autoload_configs</p>
+<ul>
+<li>modules.conf.xml</li>
+</ul>
+<pre><code class="language-xml">&lt;configuration name=&quot;modules.conf&quot; description=&quot;Modules&quot;&gt;
+   &lt;modules&gt;
+ 
+     &lt;!-- Loggers (I'd load these first) --&gt;
+     &lt;load module=&quot;mod_console&quot;/&gt;
+     &lt;load module=&quot;mod_logfile&quot;/&gt;
+ 
+     &lt;!-- XML Interfaces --&gt;
+     &lt;load module=&quot;mod_xml_rpc&quot;/&gt;
+ 
+     &lt;!-- Event Handlers --&gt;
+     &lt;load module=&quot;mod_cdr_csv&quot;/&gt;
+     &lt;load module=&quot;mod_event_socket&quot;/&gt;
+ 
+     &lt;!-- Endpoints --&gt;
+     &lt;load module=&quot;mod_sofia&quot;/&gt;
+     &lt;load module=&quot;mod_loopback&quot;/&gt;
+ 
+     &lt;!-- Applications --&gt;
+     &lt;!--load module=&quot;mod_signalwire&quot;/--&gt;
+     &lt;load module=&quot;mod_commands&quot;/&gt;
+     &lt;load module=&quot;mod_conference&quot;/&gt;
+     &lt;load module=&quot;mod_db&quot;/&gt;
+     &lt;load module=&quot;mod_dptools&quot;/&gt;
+     &lt;load module=&quot;mod_expr&quot;/&gt;
+     &lt;load module=&quot;mod_hash&quot;/&gt;
+     &lt;load module=&quot;mod_esf&quot;/&gt;
+ 
+     &lt;!-- Dialplan Interfaces --&gt;
+     &lt;load module=&quot;mod_dialplan_xml&quot;/&gt;
+ 
+     &lt;!-- Codec Interfaces --&gt;
+ 
+     &lt;!-- File Format Interfaces --&gt;
+     &lt;load module=&quot;mod_sndfile&quot;/&gt;
+     &lt;load module=&quot;mod_native_file&quot;/&gt;
+ 
+     &lt;!-- Third party modules --&gt;
+ 
+   &lt;/modules&gt;
+&lt;/configuration&gt;
+</code></pre>
+<ul>
+<li>sofia.conf.xml</li>
+</ul>
+<pre><code class="language-xml">&lt;configuration name=&quot;sofia.conf&quot; description=&quot;sofia Endpoint&quot;&gt;
+	&lt;global_settings&gt;
+	  &lt;param name=&quot;log-level&quot; value=&quot;0&quot;/&gt;
+	  &lt;param name=&quot;tracelevel&quot; value=&quot;DEBUG&quot;/&gt;
+	&lt;/global_settings&gt;
+	&lt;profiles&gt;
+	  &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;../sip_profiles/*.xml&quot;/&gt;
+	&lt;/profiles&gt;
+&lt;/configuration&gt;
+</code></pre>
+<ul>
+<li>switch.conf.xml</li>
+</ul>
+<pre><code class="language-xml">&lt;configuration name=&quot;switch.conf&quot; description=&quot;Core Configuration&quot;&gt;
+   &lt;settings&gt;
+     &lt;param name=&quot;colorize-console&quot; value=&quot;true&quot;/&gt;
+ 
+     &lt;!-- Max number of sessions to allow at any given time --&gt;
+     &lt;param name=&quot;max-sessions&quot; value=&quot;1000&quot;/&gt;
+     &lt;!--Most channels to create per second --&gt;
+     &lt;param name=&quot;sessions-per-second&quot; value=&quot;30&quot;/&gt;
+ 
+     &lt;!-- Default Global Log Level - value is one of debug,info,notice,warning,err,crit,alert --&gt;
+     &lt;param name=&quot;loglevel&quot; value=&quot;debug&quot;/&gt;
+ 
+     &lt;!-- RTP port range --&gt;
+     &lt;param name=&quot;rtp-start-port&quot; value=&quot;16384&quot;/&gt;
+     &lt;param name=&quot;rtp-end-port&quot; value=&quot;32768&quot;/&gt;
+   &lt;/settings&gt;
+&lt;/configuration&gt;	
+</code></pre>
+</li>
+<li>
+<p>sofia_profiles</p>
+</li>
+</ul>
+<pre><code class="language-xml">&lt;profile name=&quot;internal&quot;&gt;
+  &lt;settings&gt;
+    &lt;param name=&quot;auth-calls&quot; value=&quot;true&quot;/&gt;
+    &lt;param name=&quot;apply-nat-acl&quot; value=&quot;nat.auto&quot;/&gt;
+
+    &lt;param name=&quot;debug&quot; value=&quot;0&quot;/&gt;
+    &lt;param name=&quot;sip-trace&quot; value=&quot;yes&quot;/&gt;
+
+    &lt;param name=&quot;dialplan&quot; value=&quot;XML&quot;/&gt;
+    &lt;param name=&quot;context&quot; value=&quot;default&quot;/&gt;
+    &lt;param name=&quot;codec-prefs&quot; value=&quot;$${global_codec_prefs}&quot;/&gt;
+
+    &lt;param name=&quot;rtp-ip&quot; value=&quot;$${local_ip_v4}&quot;/&gt;
+    &lt;param name=&quot;sip-ip&quot; value=&quot;$${local_ip_v4}&quot;/&gt;
+    &lt;param name=&quot;ext-rtp-ip&quot; value=&quot;auto-nat&quot;/&gt;
+    &lt;param name=&quot;ext-sip-ip&quot; value=&quot;auto-nat&quot;/&gt;
+    &lt;param name=&quot;sip-port&quot; value=&quot;$${internal_sip_port}&quot;/&gt;
+  &lt;/settings&gt;
+&lt;/profile&gt;
+
+</code></pre>
+<ul>
+<li>
+<p>directory</p>
+</li>
+<li>
+<p>dialplan</p>
+</li>
+</ul>
+<h2 id="问题-5"><a class="header" href="#问题-5">问题</a></h2>
+<ul>
+<li>FreeSWITCH的配置包括几个核心的部分，分别完成什么功能？</li>
+<li>X-PRE-PROCESS代表什么，如何注释？</li>
+<li>加载配置文件是按什么继续加载的？</li>
+<li>FreeSWITCH报错中提示配置错误的行数是指的哪个文件？</li>
+<li>启动里加载的模块在哪里配置？</li>
+<li>CPS是什么意思，在哪里配置？</li>
+<li>最大并发数在哪里配置？</li>
+<li>RTP的端口范围在哪里配置？</li>
+</ul>
+<hr />
+<p><strong>参考链接</strong></p>
+<ul>
+<li><a href="https://freeswitch.org/confluence/display/FREESWITCH/Default+Configuration">参考链接-1</a></li>
+<li><a href="https://freeswitch.org/confluence/display/FREESWITCH/Configuring+FreeSWITCH">参考链接-2</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第三节-分机"><a class="header" href="#第三节-分机">第三节 分机</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第四节-dialplan"><a class="header" href="#第四节-dialplan">第四节 Dialplan</a></h1>
+<p>当一个呼叫在ROUTING状态下到达拨号规则解析器时，相应的拨号规则就开始解析了。
+随着解析的进行，在xml文件中的符合条件的 或 标签中的指令形成一个指令表，安装到这个通道中。</p>
+<p>你可以将拨号规则文件放到conf/dialplan/default下，这个目录下的拨号规则要比enum拨号规则优先处理。这个目录下的文件执行优先级是按其文件名开头的数字排序（由小到大），最大的那个文件是99999_enum.xml，这个文件捕捉所以的呼叫，所以我们自己定义的文件一定要小于这个文件才可能被先执行。一个以字母开头的文件名会大小999999_enum.xml。</p>
+<p>可以通过${api func(api arg ${var_name})}的方式调用一个模块的函数。</p>
+<p>通常一个拨号规则文件会包括三个要素：context, extension, condition和action。这些项目会被依次处理，只到达到action。</p>
+<h2 id="context"><a class="header" href="#context">context</a></h2>
+<p>context是一个extension的逻辑组，一个context可以包含一个或多个extension。</p>
+<p>context有一个name参数，any是一个保留的name参数值，它代表任何context。name用来标识一个context。在freeswitch.xml的dialplan section中可以有多个context。</p>
+<h2 id="extension"><a class="header" href="#extension">extension</a></h2>
+<p>extension就是一个呼叫的目标。它有一个name，一些condition和action，这些东西会告诉freeswitch应该做什么。</p>
+<p>语法：</p>
+<pre><code class="language-xml">&lt;extension name=&quot;{exten_name}&quot; [continue=&quot;[true|false]&quot;]&gt;
+</code></pre>
+<p>name参数是必须的，它是extension的唯一标识。</p>
+<p>另外还有一个可选的参数continue，如果它配置为true的话，即使这个extension已经匹配，在执行完它的action后，还会继续执行后序的extension。其默认值为false。</p>
+<p>{exten_name}可以是任何值。有一种特殊情况，如果exten_name正好与destination_number相等的话，解析器会从这个extension开始解析。但这是意味着就会执行它（执行要看它里面的condition）。如果没有这一特殊情况，解析器会从第一个extension开始解析。</p>
+<p>如果condition中的field与expression匹配，再执行condition中的action。此时如果expresion中的以()括起来的值话，$1,$2,…,$N会依次得到这些值。在action中的data可以使用这些变量。</p>
+<p>如果没有匹配成功，则会执行 中的指令。此时，因为没有匹配，所以$1,$2等是没有值的。</p>
+<p>condition中除了field和expression参数外，还可以有一个break参数，这个参数指明什么情况下中断这个extension的条件匹配。也就是说extension在什么情况下在这个condition中止查询，这个condition后面的condition不在执行了。</p>
+<p>break的值可以是：</p>
+<ul>
+<li>‘on-true’ :  如果这个匹配成功，则下面的condition不再查询</li>
+<li>‘on-false’:  如果这个匹配失败，则…… (这个是默认值) 。也就是说，默认的情况下，只要有一个condition匹配失败了* ，这个extension也就不再往下执行了，再换它下面的extension。* </li>
+<li>‘always’  : 总是在此处停止</li>
+<li>‘never’    : 永远不在此处停止</li>
+</ul>
+<blockquote>
+<p>示例1：</p>
+</blockquote>
+<pre><code class="language-xml">&lt;extension&gt;
+  &lt;condition field=&quot;destination_number&quot; expression=&quot;^500$&quot;&gt;
+     &lt;action application=&quot;bridge&quot; data=&quot;sofia/profilename/500%x.x.x.x&quot;/&gt;
+   &lt;/condition&gt;
+&lt;/extension&gt;
+</code></pre>
+<blockquote>
+<p>示例2，通过网关呼叫用户：</p>
+</blockquote>
+<pre><code class="language-xml">&lt;extension name=&quot;testing&quot;&gt;
+  &lt;condition field=&quot;destination_number&quot; expression=&quot;^(100)$&quot;&gt;
+    &lt;action application=&quot;bridge&quot; data=&quot;sofia/gateway/gw/$1&quot;/&gt;
+   &lt;/condition&gt;
+&lt;/extension&gt;
+</code></pre>
+<h2 id="condition"><a class="header" href="#condition">condition</a></h2>
+<p>condition就是决定当然呼叫是否要在这个extension中处理的一个模式匹配标签。</p>
+<p>语法：</p>
+<pre><code class="language-xml">&lt;condition field=&quot;[{field_name}|${variable_name}|${api_func(api_args ${var_name})}]&quot; expression=&quot;{expression}&quot; break=&quot;[on-true|on-false|always|never]&quot;&gt;
+   &lt;action application=&quot;app name&quot; data=&quot;app arg&quot;/&gt;
+   &lt;anti-action application=&quot;app name&quot; data=&quot;app arg&quot;/&gt;
+&lt;/condition&gt;
+</code></pre>
+<p>fileld和expression是必须的,break是可选的。</p>
+<p>有一些内部变量可以用：</p>
+<ul>
+<li>context Why can we use the context as a field? Give us examples of usages please.</li>
+<li>rdnis Redirected Number, the directory number to which the call was last presented.</li>
+<li>destination_number Called Number, the number this call is trying to reach (within a given context)</li>
+<li>dialplan Name of the dialplan module that are used, the name is provided by each dialplan module. Example: XML</li>
+<li>caller_id_name Name of the caller (provided by the User Agent that has called us).</li>
+<li>caller_id_number Directory Number of the party who called (caller) -- can be masked (hidden)</li>
+<li>ani Automatic Number Identification, the number of the calling party (caller) -- cannot be masked</li>
+<li>aniii The type of device placing the call ANI2</li>
+<li>uuid Unique identifier of the current call? (looks like a GUID)</li>
+<li>source Name of the FreeSWITCH module that received the call (e.g. PortAudio)</li>
+<li>chan_name Name of the current channel (Example: PortAudio/1234). Give us examples when this one can be used.</li>
+<li>network_addr IP address of the signaling source for a VoIP call.</li>
+<li>year Calendar year, 0-9999</li>
+<li>yday Day of year, 1-366</li>
+<li>mon Month, 1-12 (Jan = 1, etc.)</li>
+<li>mday Day of month, 1-31</li>
+<li>week Week of year, 1-53</li>
+<li>mweek Week of month, 1-6</li>
+<li>wday Day of week, 1-7 (Sun = 1, Mon = 2, etc.)</li>
+<li>hour Hour, 0-23</li>
+<li>minute Minute (of the hour), 0-59</li>
+<li>minute-of-day Minute of the day, (1-1440) (midnight = 1, 1am = 60, noon = 720, etc.)</li>
+</ul>
+<p>除了上面的变量外，还可以使用自定义的变量${variable}，以及一些api函数${api(args)}</p>
+<p>这些变量可以在field及expression里。</p>
+<p>condition是不能嵌套的，但可以将多个condition堆在一起，并设置break为on-false（默认值），这样的效果与嵌套一样。</p>
+<p>示例1，利用cond API函数：</p>
+<pre><code class="language-xml">&lt;condition field=&quot;${cond(${my_var} &gt; 12 ? YES : NO)}&quot; expression=&quot;^YES$&quot;&gt;
+    &lt;action application=&quot;log&quot; data=&quot;INFO ${my_var} is indeed greater than 12&quot;/&gt;
+    &lt;anti-action application=&quot;log&quot; data=&quot;INFO ${my_var} is not greater than 12&quot;/&gt;
+ 
+   condition&gt;
+</code></pre>
+<p>示例2， 嵌套效果：</p>
+<pre><code class="language-xml">&lt;extension name=&quot;To PSTN&quot;&gt;
+  &lt;condition field=&quot;fdnis&quot; expression=&quot;9541231234&quot;/&gt; 
+  &lt;condition field=&quot;destination_number&quot; expression=&quot;(.*)&quot;&gt;
+      &lt;action application=&quot;bridge&quot; data=&quot;sofia/profilename/$1@x.x.x.x:5061&quot;/&gt;
+   &lt;/condition&gt;
+&lt;/extension&gt;
+</code></pre>
+<hr />
+<p><strong>参考链接</strong></p>
+<ul>
+<li><a href="https://freeswitch.org/confluence/display/FREESWITCH/XML+Dialplan">参考链接-1</a></li>
+<li><a href="https://blog.csdn.net/karl_max/article/details/5046811">参考链接-2</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第五节-对接外线"><a class="header" href="#第五节-对接外线">第五节 对接外线</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第六节-lua脚本"><a class="header" href="#第六节-lua脚本">第六节 Lua脚本</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第七节-三方会议"><a class="header" href="#第七节-三方会议">第七节 三方&amp;会议</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第八节-视频"><a class="header" href="#第八节-视频">第八节 视频</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第三章-呼叫中心"><a class="header" href="#第三章-呼叫中心">第三章 呼叫中心</a></h1>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </body>
+</html>

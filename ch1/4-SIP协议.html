@@ -1,0 +1,412 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>SIP协议 - DIY CC</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="从0到1搭建一个呼叫中心系统">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../前言.html"><strong aria-hidden="true">1.</strong> 前言</a></li><li class="chapter-item expanded "><a href="../ch1/VoIP基础.html"><strong aria-hidden="true">2.</strong> VoIP基础</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ch1/1-IP网络基础.html"><strong aria-hidden="true">2.1.</strong> IP网络基础</a></li><li class="chapter-item expanded "><a href="../ch1/2-电话通信基础.html"><strong aria-hidden="true">2.2.</strong> 电话通信基础</a></li><li class="chapter-item expanded "><a href="../ch1/3-VoIP.html"><strong aria-hidden="true">2.3.</strong> VoIP</a></li><li class="chapter-item expanded "><a href="../ch1/4-SIP协议.html" class="active"><strong aria-hidden="true">2.4.</strong> SIP协议</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> 媒体网关</div></li></ol></li><li class="chapter-item expanded "><a href="../ch2/FreeSWITCH.html"><strong aria-hidden="true">3.</strong> FreeSWITCH</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ch2/4.1-编译.html"><strong aria-hidden="true">3.1.</strong> 编译&amp;运行</a></li><li class="chapter-item expanded "><a href="../ch2/4.2-配置.html"><strong aria-hidden="true">3.2.</strong> 基本配置</a></li><li class="chapter-item expanded "><a href="../ch2/4.3-分机.html"><strong aria-hidden="true">3.3.</strong> 分机</a></li><li class="chapter-item expanded "><a href="../ch2/4.4-Dialplan.html"><strong aria-hidden="true">3.4.</strong> Dialplan</a></li><li class="chapter-item expanded "><a href="../ch2/4.5-对接外线.html"><strong aria-hidden="true">3.5.</strong> 对接外线</a></li><li class="chapter-item expanded "><a href="../ch2/4.6-Lua脚本.html"><strong aria-hidden="true">3.6.</strong> Lua脚本</a></li><li class="chapter-item expanded "><a href="../ch2/4.7-三方和会议.html"><strong aria-hidden="true">3.7.</strong> 三方&amp;会议</a></li><li class="chapter-item expanded "><a href="../ch2/4.8-视频.html"><strong aria-hidden="true">3.8.</strong> 视频</a></li></ol></li><li class="chapter-item expanded "><a href="../ch3/5-呼叫中心.html"><strong aria-hidden="true">4.</strong> 呼叫中心</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">DIY CC</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="第四节-sip协议"><a class="header" href="#第四节-sip协议">第四节 SIP协议</a></h1>
+<h2 id="sip定义"><a class="header" href="#sip定义">SIP定义</a></h2>
+<blockquote>
+<p>The Session Initiation Protocol (SIP) is a signaling protocol used for initiating, maintaining, and terminating communication sessions that include voice, video and messaging applications.</p>
+</blockquote>
+<blockquote>
+<p>SIP is used in Internet telephony, in private IP telephone systems, as well as mobile phone calling over LTE (VoLTE).</p>
+</blockquote>
+<blockquote>
+<p>The protocol defines the specific format of messages exchanged and the sequence of communications for cooperation of the participants. SIP is a text-based protocol, incorporating many elements of the Hypertext Transfer Protocol (HTTP) and the Simple Mail Transfer Protocol (SMTP). </p>
+</blockquote>
+<blockquote>
+<p>A call established with SIP may consist of multiple media streams, but no separate streams are required for applications, such as text messaging, that exchange data as payload in the SIP message.</p>
+</blockquote>
+<ul>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc2543">RFC 2543</a></p>
+</li>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc3261">RFC 3261</a></p>
+</li>
+<li>
+<p>例子</p>
+</li>
+</ul>
+<pre><code>INVITE sip:9171959@112.97.160.199:42051;transport=udp SIP/2.0
+Via: SIP/2.0/UDP 47.100.223.119:5474;rport;branch=z9hG4bK7SB00gXrv4pQp
+Route: &lt;sip:139.224.80.27:5474&gt;;lr;received=sip:112.97.160.199:42051
+Max-Forwards: 70
+From: &quot;188xxxx7678&quot; &lt;sip:188xxxx7678@kcc1.s2.udesk.cn&gt;;tag=r74jSZy64ZZ4r
+To: &lt;sip:9171959@112.97.160.199:42051;transport=udp&gt;
+Call-ID: 290be5c2-b7ef-123b-26b0-00163e004ba5
+CSeq: 57527883 INVITE
+Contact: &lt;sip:mod_sofia@47.100.223.119:5474&gt;
+User-Agent: FreeSWITCH-mod_sofia/1.6.20~64bit
+Allow: INVITE, ACK, BYE, CANCEL, OPTIONS, MESSAGE, INFO, UPDATE, REGISTER, REFER, NOTIFY, PUBLISH, SUBSCRIBE
+Supported: timer, path, replaces
+Allow-Events: talk, hold, conference, presence, as-feature-event, dialog, line-seize, call-info, sla, include-session-description, presence.winfo, message-summary, refer
+Content-Type: application/sdp
+Content-Disposition: session
+Content-Length: 272
+Remote-Party-ID: &quot;188xxxx7678&quot; &lt;sip:188xxxx7678@kcc1.s2.udesk.cn&gt;;party=calling;screen=yes;privacy=off
+</code></pre>
+<ul>
+<li>说明</li>
+</ul>
+<pre><code>INVITE: 方法，URI, 版本
+Via: 请求通过的路径，响应时也要通过这些路径
+Route: lr 宽松路由
+Max-Forwards: 最大转接数
+From：
+To：
+Call-ID:
+CSeq:
+Contact:
+User-Agent:
+Allow:
+Supported:
+Allow-Events:
+Content-Type:
+Content-Disposition:
+Remote-Party-ID:
+</code></pre>
+<h2 id="sip网络元素"><a class="header" href="#sip网络元素">SIP网络元素</a></h2>
+<ul>
+<li>User Agent</li>
+<li>Proxy Server</li>
+<li>Registar Server</li>
+<li>Gateway</li>
+<li>SBC(Session border controller)</li>
+</ul>
+<h2 id="sip消息和响应"><a class="header" href="#sip消息和响应">SIP消息和响应</a></h2>
+<ul>
+<li>
+<p>REGISTER</p>
+</li>
+<li>
+<p>INVITE</p>
+</li>
+<li>
+<p>ACK</p>
+</li>
+<li>
+<p>BYE</p>
+</li>
+<li>
+<p>CANCEL</p>
+</li>
+<li>
+<p>REFER</p>
+</li>
+<li>
+<p>INFO</p>
+</li>
+<li>
+<p>OPTIONS</p>
+</li>
+<li>
+<p>1xx：Provisional Responses</p>
+<ul>
+<li>100: Trying</li>
+<li>180: Ringing</li>
+<li>183: Session Progress</li>
+</ul>
+</li>
+<li>
+<p>2xx: Successful Responses</p>
+<ul>
+<li>200 OK</li>
+</ul>
+</li>
+<li>
+<p>3xx: Redirection Responses</p>
+<ul>
+<li>302 Moved Temporarily</li>
+</ul>
+</li>
+<li>
+<p>4xx: Client Failure Responses</p>
+<ul>
+<li>401: Unauthorized</li>
+<li>403: Forbidden</li>
+<li>404: Not Found</li>
+<li>408: Request Timeout</li>
+<li>480: Temporarily Unavailable</li>
+</ul>
+</li>
+<li>
+<p>5xx: Server Failure Responses</p>
+</li>
+<li>
+<p>6xx: Global Failure Responses</p>
+</li>
+</ul>
+<h2 id="sdp"><a class="header" href="#sdp">SDP</a></h2>
+<blockquote>
+<p>The Session Description Protocol (SDP) is a format for describing multimedia communication sessions for the purposes of announcement and invitation. Its predominant use is in support of streaming media applications, such as voice over IP (VoIP) and video conferencing. SDP does not deliver any media streams itself but is used between endpoints for negotiation of network metrics, media types, and other associated properties. The set of properties and parameters is called a session profile.</p>
+</blockquote>
+<ul>
+<li>例子</li>
+</ul>
+<pre><code>v=0
+o=FreeSWITCH 1664145433 1664145434 IN IP4 47.100.223.119
+s=FreeSWITCH
+c=IN IP4 47.100.223.119
+t=0 0
+m=audio 17918 RTP/AVP 8 0 101 13
+a=rtpmap:8 PCMA/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-16
+a=rtpmap:13 CN/8000
+a=ptime:20
+</code></pre>
+<ul>
+<li>说明</li>
+</ul>
+<pre><code>v=  协议版本
+o=  发起方：&lt;username&gt; &lt;sess-id&gt; &lt;sess-version&gt; &lt;nettype&gt; &lt;addrtype&gt; &lt;unicast-address&gt;
+s=  会话名称
+c=  连接信息 &lt;nettype&gt; &lt;addrtype&gt; &lt;unicast-address&gt;
+t=  计时信息：&lt;start-time&gt; &lt;stop-time&gt;：都是0代表永久
+m=  媒体信息：&lt;media&gt; &lt;port&gt; &lt;proto&gt; &lt;fmt&gt;
+a=  属性
+</code></pre>
+<h2 id="ims"><a class="header" href="#ims">IMS</a></h2>
+<blockquote>
+<p>The IP Multimedia Subsystem or IP Multimedia Core Network Subsystem (IMS) is a standardised architectural framework for delivering IP multimedia services. Historically, mobile phones have provided voice call services over a circuit-switched-style network, rather than strictly over an IP packet-switched network. Alternative methods of delivering voice (VoIP) or other multimedia services have become available on smartphones, but they have not become standardized across the industry.IMS is an architectural framework that provides such standardization.</p>
+</blockquote>
+<ul>
+<li>3GPP: 第三代合作伙伴项目，开发移动通信协议标准的一个组织；</li>
+</ul>
+<h2 id="sip消息分析工具"><a class="header" href="#sip消息分析工具">SIP消息分析工具</a></h2>
+<ul>
+<li>sngrep:</li>
+<li>sipcapture:</li>
+<li>tcpdump,wireshark</li>
+</ul>
+<h2 id="问题"><a class="header" href="#问题">问题</a></h2>
+<ul>
+<li>SIP协议是哪一层的协议？</li>
+<li>SIP协议用的是什么传输协议？</li>
+<li>SIP协议可以传输文本消息吗？</li>
+<li>SIP网络里都有哪些元素？</li>
+<li>REGISTER消息返回401说明什么？</li>
+<li>INVITE消息返回408说明什么</li>
+<li>SIP协议的RFC版本是什么？</li>
+<li>SBC在SIP网络里有什么用？</li>
+<li>Gateway在SIP网络里有会用？</li>
+<li>能力协商过程是什么样的？</li>
+<li>为什么iptables已经封了的IP地址，在sngrep里还能看到？</li>
+</ul>
+<hr />
+<p><strong>参考链接</strong></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Session_Initiation_Protocol">参考链接-1</a></li>
+<li><a href="https://en.wikipedia.org/wiki/List_of_SIP_response_codes#4xx%E2%80%94Client_Failure_Responses">参考链接-2</a></li>
+<li><a href="https://en.wikipedia.org/wiki/IP_Multimedia_Subsystem">参考链接-3</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Session_Description_Protocol">参考链接-4</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc4566">参考链接-5</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc2543">参考链接-6</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc3261">参考链接-7</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../ch1/3-VoIP.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../ch2/FreeSWITCH.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../ch1/3-VoIP.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../ch2/FreeSWITCH.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

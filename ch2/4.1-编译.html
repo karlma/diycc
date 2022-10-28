@@ -1,0 +1,622 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>编译&amp;运行 - DIY CC</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="从0到1搭建一个呼叫中心系统">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../前言.html"><strong aria-hidden="true">1.</strong> 前言</a></li><li class="chapter-item expanded "><a href="../ch1/VoIP基础.html"><strong aria-hidden="true">2.</strong> VoIP基础</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ch1/1-IP网络基础.html"><strong aria-hidden="true">2.1.</strong> IP网络基础</a></li><li class="chapter-item expanded "><a href="../ch1/2-电话通信基础.html"><strong aria-hidden="true">2.2.</strong> 电话通信基础</a></li><li class="chapter-item expanded "><a href="../ch1/3-VoIP.html"><strong aria-hidden="true">2.3.</strong> VoIP</a></li><li class="chapter-item expanded "><a href="../ch1/4-SIP协议.html"><strong aria-hidden="true">2.4.</strong> SIP协议</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> 媒体网关</div></li></ol></li><li class="chapter-item expanded "><a href="../ch2/FreeSWITCH.html"><strong aria-hidden="true">3.</strong> FreeSWITCH</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ch2/4.1-编译.html" class="active"><strong aria-hidden="true">3.1.</strong> 编译&amp;运行</a></li><li class="chapter-item expanded "><a href="../ch2/4.2-配置.html"><strong aria-hidden="true">3.2.</strong> 基本配置</a></li><li class="chapter-item expanded "><a href="../ch2/4.3-分机.html"><strong aria-hidden="true">3.3.</strong> 分机</a></li><li class="chapter-item expanded "><a href="../ch2/4.4-Dialplan.html"><strong aria-hidden="true">3.4.</strong> Dialplan</a></li><li class="chapter-item expanded "><a href="../ch2/4.5-对接外线.html"><strong aria-hidden="true">3.5.</strong> 对接外线</a></li><li class="chapter-item expanded "><a href="../ch2/4.6-Lua脚本.html"><strong aria-hidden="true">3.6.</strong> Lua脚本</a></li><li class="chapter-item expanded "><a href="../ch2/4.7-三方和会议.html"><strong aria-hidden="true">3.7.</strong> 三方&amp;会议</a></li><li class="chapter-item expanded "><a href="../ch2/4.8-视频.html"><strong aria-hidden="true">3.8.</strong> 视频</a></li></ol></li><li class="chapter-item expanded "><a href="../ch3/5-呼叫中心.html"><strong aria-hidden="true">4.</strong> 呼叫中心</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">DIY CC</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="第一节-编译运行"><a class="header" href="#第一节-编译运行">第一节 编译&amp;运行</a></h1>
+<h2 id="环境准备"><a class="header" href="#环境准备">环境准备</a></h2>
+<h3 id="docker环境"><a class="header" href="#docker环境">docker环境</a></h3>
+<ul>
+<li>安装docker</li>
+</ul>
+<p><img src="./res/docker.png" alt="images" /></p>
+<ul>
+<li>安装portainer</li>
+</ul>
+<p><img src="./res/portainer.png" alt="images" /></p>
+<h3 id="创建操作系统docker镜像"><a class="header" href="#创建操作系统docker镜像">创建操作系统docker镜像</a></h3>
+<ul>
+<li>Dockerfile：&quot;ubuntu-base:20.04&quot;</li>
+</ul>
+<pre><code class="language-shell">FROM       amd64/ubuntu:20.04
+MAINTAINER Karl Ma
+
+# Change sourcelist to aliyun
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list &amp;&amp; \
+    sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+RUN apt update
+
+# locale
+RUN apt install -y locales
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG=en_US.utf8
+
+# timezone
+RUN DEBIAN_FRONTEND=noninteractive apt install -yq tzdata
+RUN ln -fs /usr/share/zoneinfo/Asia/Harbin /etc/localtime &amp;&amp; \
+    dpkg-reconfigure -f noninteractive tzdata
+ENV TZ=&quot;Asia/Harbin&quot;
+
+# vim
+RUN apt install -y vim \
+    iputils-ping \
+    net-tools \
+    git
+
+
+# clear apt cache
+RUN rm -rf /var/lib/apt/lists/*
+</code></pre>
+<ul>
+<li>build</li>
+</ul>
+<pre><code class="language-shell">docker build --platform linux/x86_64 -t ubuntu-base:20.04 .
+</code></pre>
+<h3 id="创建编译环境docker镜像"><a class="header" href="#创建编译环境docker镜像">创建编译环境docker镜像</a></h3>
+<ul>
+<li>Dockerfile：&quot;fs-dev:1.10.7-1&quot;</li>
+</ul>
+<pre><code class="language-bash">FROM karlma/ubuntu-base:20.04
+
+MAINTAINER Karl Ma
+ENV REFRESHED_AT 2022-08-16
+
+RUN apt-get update &amp;&amp; apt-get install -y \
+    autoconf \
+    cmake \
+    g++ \
+    libcurl4-openssl-dev \
+    libedit-dev \
+    libjpeg-dev \
+    libldns-dev \
+    liblua5.2-dev \
+    libmp3lame-dev \
+    libmpg123-dev \
+    libncurses5-dev \
+    libopus-dev \
+    libpcap-dev \
+    libpcre3-dev \
+    libsctp-dev \
+    libshout3-dev \
+    libsndfile1-dev \
+    libspeex-dev \
+    libspeexdsp-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    libtiff-dev \
+    libtiff-dev \
+    libtool-bin \
+    libmariadb-dev \
+    mariadb-client \
+    lua5.2 \
+    make \
+    unixodbc-dev \
+    uuid-dev \
+    yasm \
+    zlib1g-dev \
+    curl \
+    telnet \
+	&amp;&amp; rm -rf /var/lib/apt/lists/*
+
+VOLUME /usr/local/freeswitch
+
+WORKDIR /usr/local/freeswitch
+</code></pre>
+<ul>
+<li>build</li>
+</ul>
+<pre><code class="language-shell">docker build --platform linux/x86_64 -t fs-dev:1.10.7-1 .
+</code></pre>
+<h3 id="获取源代码"><a class="header" href="#获取源代码">获取源代码</a></h3>
+<ul>
+<li>获取FreeSWITCH源码</li>
+</ul>
+<pre><code class="language-bash">git clone -b v1.10.7 https://github.com/signalwire/freeswitch.git
+</code></pre>
+<ul>
+<li>获取sofia源码</li>
+</ul>
+<pre><code class="language-bash">cd /usr/local/src/freeswitch #在freeswitch源码目录下
+git clone https://github.com/freeswitch/sofia-sip.git
+</code></pre>
+<ul>
+<li>获取spandsp源码</li>
+</ul>
+<pre><code class="language-bash">cd /usr/local/src/freeswitch
+git clone https://github.com/freeswitch/spandsp.git
+</code></pre>
+<h2 id="编译sofia和spandsp"><a class="header" href="#编译sofia和spandsp">编译sofia和spandsp</a></h2>
+<ul>
+<li>启动容器</li>
+</ul>
+<pre><code class="language-bash">docker run -it -v 本地源码目录:/usr/local/src/freeswitch -v 本地安装目录:/usr/local/freeswitch fs-dev:1.10.7-1 /bin/bash
+</code></pre>
+<ul>
+<li>编译sofia</li>
+</ul>
+<pre><code class="language-bash">cd sofia-sip
+./bootstrap.sh -j
+./configure --prefix=/usr/local/freeswitch
+make
+make install
+ldconfig -p
+</code></pre>
+<blockquote>
+<p>安装完成在下面目录中</p>
+</blockquote>
+<pre><code class="language-bash">/usr/local/freeswitch/lib/libsofia-sip-ua*
+/usr/local/freeswitch/lib/pkconfig/sofia-sip-ua.pc
+
+/usr/local/freeswitch/include/sofia-sip-1.13
+</code></pre>
+<ul>
+<li>编译spandsp</li>
+</ul>
+<pre><code class="language-bash">cd spandsp/
+./bootstrap.sh -j
+./configure  --prefix=/usr/local/freeswitch
+make
+make install
+ldconfig -p
+</code></pre>
+<blockquote>
+<p>安装完成后在下面目录中</p>
+</blockquote>
+<pre><code class="language-bash">/usr/local/freeswitch/lib/libspandsp*
+/usr/local/freeswitch/include/spandsp
+/usr/local/freeswitch/include/spandsp.h
+</code></pre>
+<ul>
+<li>export PKG_CONFIG_PATH</li>
+</ul>
+<pre><code>export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/freeswitch/lib/pkgconfig
+</code></pre>
+<ul>
+<li>ldconfig</li>
+</ul>
+<pre><code class="language-bash">echo &quot;/usr/local/freeswitch/lib&quot; &gt; /etc/ld.so.conf.d/freeswitch.conf
+ldconfig
+ldconfig -p|grep sofia
+ldconfig -p|grep spandsp
+</code></pre>
+<h2 id="编译freeswitch"><a class="header" href="#编译freeswitch">编译freeswitch</a></h2>
+<pre><code>cd /usr/local/src/freeswitch
+./bootstrap.sh -j
+</code></pre>
+<ul>
+<li>修改modules.conf</li>
+</ul>
+<pre><code>applications/mod_commands
+applications/mod_conference
+applications/mod_curl
+applications/mod_db
+applications/mod_directory
+applications/mod_distributor
+applications/mod_dptools
+applications/mod_easyroute
+applications/mod_expr
+applications/mod_fifo
+applications/mod_hash
+applications/mod_httapi
+applications/mod_http_cache
+asr_tts/mod_unimrcp
+codecs/mod_opus
+dialplans/mod_dialplan_xml
+endpoints/mod_loopback
+endpoints/mod_rtc
+endpoints/mod_sofia
+event_handlers/mod_cdr_sqlite
+event_handlers/mod_event_socket
+formats/mod_local_stream
+formats/mod_native_file
+formats/mod_sndfile
+formats/mod_tone_stream
+languages/mod_lua
+loggers/mod_console
+loggers/mod_logfile
+loggers/mod_syslog
+say/mod_say_en
+say/mod_say_zh
+xml_int/mod_xml_curl
+</code></pre>
+<ul>
+<li>configure</li>
+</ul>
+<pre><code>./configure --enable-core-odbc-support 
+</code></pre>
+<blockquote>
+<p>目录结构</p>
+</blockquote>
+<pre><code>  Locations:
+
+      prefix:          /usr/local/freeswitch
+      exec_prefix:     /usr/local/freeswitch
+      bindir:          ${exec_prefix}/bin
+      confdir:         /usr/local/freeswitch/conf
+      libdir:          ${exec_prefix}/lib
+      datadir:         /usr/local/freeswitch
+      localstatedir:   /usr/local/freeswitch
+      includedir:      /usr/local/freeswitch/include/freeswitch
+
+      certsdir:        /usr/local/freeswitch/certs
+      dbdir:           /usr/local/freeswitch/db
+      grammardir:      /usr/local/freeswitch/grammar
+      htdocsdir:       /usr/local/freeswitch/htdocs
+      fontsdir:        /usr/local/freeswitch/fonts
+      logfiledir:      /usr/local/freeswitch/log
+      modulesdir:      /usr/local/freeswitch/mod
+      pkgconfigdir:    ${exec_prefix}/lib/pkgconfig
+      recordingsdir:   /usr/local/freeswitch/recordings
+      imagesdir:       /usr/local/freeswitch/images
+      runtimedir:      /usr/local/freeswitch/run
+      scriptdir:       /usr/local/freeswitch/scripts
+      soundsdir:       /usr/local/freeswitch/sounds
+      storagedir:      /usr/local/freeswitch/storage
+      cachedir:        /usr/local/freeswitch/cache
+</code></pre>
+<ul>
+<li>make install</li>
+</ul>
+<pre><code class="language-bash">make
+make install
+</code></pre>
+<h2 id="docker启动freeswitch"><a class="header" href="#docker启动freeswitch">docker启动freeswitch</a></h2>
+<ul>
+<li>
+<p>docker网络尽量使用用host模式</p>
+</li>
+<li>
+<p>Dockerfile</p>
+</li>
+</ul>
+<pre><code class="language-bash">FROM karlma/ubuntu-base:20.04
+
+MAINTAINER Karl Ma
+ENV REFRESHED_AT 2022-08-16
+
+RUN groupadd -r freeswitch --gid=999 &amp;&amp; useradd -r -g freeswitch --uid=999 freeswitch
+
+RUN apt-get update &amp;&amp; apt-get install -y \
+    libcurl4-openssl-dev \
+    libedit-dev \
+    libjpeg-dev \
+    libldns-dev \
+    liblua5.2 \
+    libmp3lame-dev \
+    libmpg123-dev \
+    libncurses5 \
+    libopus-dev \
+    libpcap-dev \
+    libpcre3 \
+    libsctp-dev \
+    libshout3 \
+    libsndfile1 \
+    libspeex-dev \
+    libspeexdsp-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    libtiff-dev \
+    libtool-bin \
+    lua5.2 \
+    unixodbc \
+    uuid \
+    zlib1g \
+    curl \
+    telnet \
+    libmariadb-dev \
+    mariadb-client \
+    sngrep \
+    gosu
+
+RUN apt autoremove
+RUN apt clean &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+
+ENV FS_SBC_BASE freeswitch # 编译安装的目标
+ENV DEPLOY_BASE deploy # 相关脚本目标
+
+# Limits Configuration
+COPY ${DEPLOY_BASE}/freeswitch.limits.conf /etc/security/limits.d/
+
+COPY ${DEPLOY_BASE}/docker-entrypoint.sh /
+
+
+RUN mkdir -p /usr/local/freeswitch
+
+COPY ${FS_SBC_BASE}/bin /usr/local/freeswitch/bin
+COPY ${FS_SBC_BASE}/certs /usr/local/freeswitch/certs
+COPY ${FS_SBC_BASE}/fonts /usr/local/freeswitch/fonts
+COPY ${FS_SBC_BASE}/lib /usr/local/freeswitch/lib
+COPY ${FS_SBC_BASE}/mod /usr/local/freeswitch/mod
+COPY ${FS_SBC_BASE}/recordings /usr/local/freeswitch/recordings
+COPY ${FS_SBC_BASE}/share /usr/local/freeswitch/share
+COPY ${FS_SBC_BASE}/sounds /usr/local/freeswitch/sounds
+COPY ${FS_SBC_BASE}/storage /usr/local/freeswitch/storage
+
+RUN mkdir -p /usr/local/freeswitch/db
+RUN mkdir -p /usr/local/freeswitch/run
+
+RUN mkdir -p /var/log/freeswitch
+RUN ln -s /var/log/freeswitch /usr/local/freeswitch/log
+
+
+SHELL       [&quot;/bin/bash&quot;]
+HEALTHCHECK --interval=15s --timeout=5s \
+     CMD  /usr/local/freeswitch/bin/fs_cli -x status | grep -q ^UP || exit 1
+
+# xml rpc
+EXPOSE 7744/tcp
+
+# sip
+EXPOSE 7854/udp
+EXPOSE 7854/tcp
+EXPOSE 8891/udp
+EXPOSE 8891/tcp
+
+# rtp
+EXPOSE 16384-17185/udp
+
+
+WORKDIR /usr/local/freeswitch
+
+VOLUME /usr/local/freeswitch/conf
+VOLUME /usr/local/freeswitch/scripts
+VOLUME /var/log/freeswitch
+
+
+ENTRYPOINT [&quot;/docker-entrypoint.sh&quot;]
+
+CMD [&quot;freeswitch&quot;]
+</code></pre>
+<ul>
+<li>deploy/freeswitch.limits.conf文件</li>
+</ul>
+<pre><code class="language-bash">freeswitch       soft    core            unlimited
+freeswitch       soft    data            unlimited
+freeswitch       soft    fsize           unlimited
+freeswitch       soft    memlock         unlimited
+freeswitch       soft    nofile          999999
+freeswitch       soft    rss             unlimited
+freeswitch       hard    stack           240
+freeswitch       soft    cpu             unlimited
+freeswitch       soft    nproc           unlimited
+freeswitch       soft    as              unlimited
+freeswitch       soft    priority        -11
+freeswitch       soft    locks           unlimited
+freeswitch       soft    sigpending      unlimited
+freeswitch       soft    msgqueue        unlimited
+freeswitch       soft    nice            -11
+</code></pre>
+<ul>
+<li>启动脚本deploy/docker-entrypoint.sh</li>
+</ul>
+<pre><code class="language-bash">#!/bin/bash
+set -e # 运行出错即可退出
+
+if [ &quot;$1&quot; = 'freeswitch' ]; then
+
+    chown -R freeswitch:freeswitch /usr/local/freeswitch
+    chown -R freeswitch:freeswitch /var/log/freeswitch
+
+    if [ -d /docker-entrypoint.d ]; then
+        for f in /docker-entrypoint.d/*.sh; do
+            [ -f &quot;$f&quot; ] &amp;&amp; . &quot;$f&quot;
+        done
+    fi
+    
+    exec gosu freeswitch /usr/local/freeswitch/bin/freeswitch -u freeswitch -g freeswitch -nonat -c
+
+fi
+
+exec &quot;$@&quot; # 执行非freeswitch命令
+</code></pre>
+<h2 id="问题"><a class="header" href="#问题">问题</a></h2>
+<ul>
+<li>自己动手做一遍，输出一个FreeSWITCH的docker镜像</li>
+<li>系统启动后，注册一个分机，拨9196，测试一下echo</li>
+<li>FreeSWITCH的启动参数-nonat是什么意思，-nc,ncwait是什么意思？</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../ch2/FreeSWITCH.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../ch2/4.2-配置.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../ch2/FreeSWITCH.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../ch2/4.2-配置.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

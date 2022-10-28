@@ -1,0 +1,425 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>基本配置 - DIY CC</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="从0到1搭建一个呼叫中心系统">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../前言.html"><strong aria-hidden="true">1.</strong> 前言</a></li><li class="chapter-item expanded "><a href="../ch1/VoIP基础.html"><strong aria-hidden="true">2.</strong> VoIP基础</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ch1/1-IP网络基础.html"><strong aria-hidden="true">2.1.</strong> IP网络基础</a></li><li class="chapter-item expanded "><a href="../ch1/2-电话通信基础.html"><strong aria-hidden="true">2.2.</strong> 电话通信基础</a></li><li class="chapter-item expanded "><a href="../ch1/3-VoIP.html"><strong aria-hidden="true">2.3.</strong> VoIP</a></li><li class="chapter-item expanded "><a href="../ch1/4-SIP协议.html"><strong aria-hidden="true">2.4.</strong> SIP协议</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> 媒体网关</div></li></ol></li><li class="chapter-item expanded "><a href="../ch2/FreeSWITCH.html"><strong aria-hidden="true">3.</strong> FreeSWITCH</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ch2/4.1-编译.html"><strong aria-hidden="true">3.1.</strong> 编译&amp;运行</a></li><li class="chapter-item expanded "><a href="../ch2/4.2-配置.html" class="active"><strong aria-hidden="true">3.2.</strong> 基本配置</a></li><li class="chapter-item expanded "><a href="../ch2/4.3-分机.html"><strong aria-hidden="true">3.3.</strong> 分机</a></li><li class="chapter-item expanded "><a href="../ch2/4.4-Dialplan.html"><strong aria-hidden="true">3.4.</strong> Dialplan</a></li><li class="chapter-item expanded "><a href="../ch2/4.5-对接外线.html"><strong aria-hidden="true">3.5.</strong> 对接外线</a></li><li class="chapter-item expanded "><a href="../ch2/4.6-Lua脚本.html"><strong aria-hidden="true">3.6.</strong> Lua脚本</a></li><li class="chapter-item expanded "><a href="../ch2/4.7-三方和会议.html"><strong aria-hidden="true">3.7.</strong> 三方&amp;会议</a></li><li class="chapter-item expanded "><a href="../ch2/4.8-视频.html"><strong aria-hidden="true">3.8.</strong> 视频</a></li></ol></li><li class="chapter-item expanded "><a href="../ch3/5-呼叫中心.html"><strong aria-hidden="true">4.</strong> 呼叫中心</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">DIY CC</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="第二节-基本配置"><a class="header" href="#第二节-基本配置">第二节 基本配置</a></h1>
+<h2 id="xml"><a class="header" href="#xml">XML</a></h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!-- comment here --&gt;
+&lt;note&gt;
+	&lt;from user=&quot;John&quot; id=&quot;1234&quot;&gt;John&lt;/from&gt;
+	&lt;to user=&quot;Bob&quot; id=&quot;5678&quot;&gt;George&lt;/to&gt;
+	&lt;heading&gt;Reminder&lt;/heading&gt;
+	&lt;body&gt;Don't forget the meeting!&lt;/body&gt;
+&lt;/note&gt;
+</code></pre>
+<ul>
+<li>声明</li>
+<li>元素：树形结构，root, item</li>
+<li>属性</li>
+<li>注释</li>
+<li>大小写敏感</li>
+</ul>
+<h2 id="freeswitch特有的解析方式"><a class="header" href="#freeswitch特有的解析方式">FreeSWITCH特有的解析方式</a></h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+ &lt;document type=&quot;freeswitch/xml&quot;&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;vars.xml&quot;/&gt;
+ 
+   &lt;section name=&quot;configuration&quot; description=&quot;Various Configuration&quot;&gt;
+     &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;autoload_configs/*.xml&quot;/&gt;
+   &lt;/section&gt;
+ 
+   &lt;section name=&quot;dialplan&quot; description=&quot;Regex/XML Dialplan&quot;&gt;
+     &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;dialplan/*.xml&quot;/&gt;
+   &lt;/section&gt;
+ &lt;/document&gt;
+</code></pre>
+<ul>
+<li>预处理：X-PRE-PROCESS</li>
+</ul>
+<blockquote>
+<p>注意：预处理的注释失效，想要注释的话，换成X-NO-PRE-PROCESS</p>
+</blockquote>
+<ul>
+<li>cmd=&quot;include&quot;</li>
+</ul>
+<h2 id="配置文件结构"><a class="header" href="#配置文件结构">配置文件结构</a></h2>
+<ul>
+<li>minimal</li>
+</ul>
+<p><img src="./res/conf_minimal.png" alt="images" /></p>
+<ul>
+<li>vanilla(default)</li>
+</ul>
+<p><img src="./res/fs_default_config.jpeg" alt="images" /></p>
+<h2 id="重点说明"><a class="header" href="#重点说明">重点说明</a></h2>
+<ul>
+<li>freeswitch.xml</li>
+</ul>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+ &lt;document type=&quot;freeswitch/xml&quot;&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;vars.xml&quot;/&gt;
+ 
+   &lt;section name=&quot;configuration&quot; description=&quot;Various Configuration&quot;&gt;
+     &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;autoload_configs/*.xml&quot;/&gt;
+   &lt;/section&gt;
+ 
+   &lt;section name=&quot;dialplan&quot; description=&quot;Regex/XML Dialplan&quot;&gt;
+     &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;dialplan/*.xml&quot;/&gt;
+   &lt;/section&gt;
+ &lt;/document&gt;
+</code></pre>
+<blockquote>
+<p>freeswitch.xml.fsxml,	<strong>不要直接编辑这个文件</strong></p>
+</blockquote>
+<ul>
+<li>vars.xml</li>
+</ul>
+<pre><code class="language-xml"> &lt;include&gt; &lt;!-- 注意这里 --&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;set&quot; data=&quot;global_codec_prefs=PCMU,PCMA&quot;/&gt;
+ 
+   &lt;!-- NOTE: CHANGE THIS BEFORE USE --&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;set&quot; data=&quot;xml_rpc_password=worksnot&quot;/&gt;
+ 
+   &lt;X-PRE-PROCESS cmd=&quot;set&quot; data=&quot;internal_sip_port=5060&quot;/&gt;
+   &lt;X-PRE-PROCESS cmd=&quot;set&quot; data=&quot;external_sip_port=5080&quot;/&gt;
+ &lt;/include&gt;
+</code></pre>
+<ul>
+<li>
+<p>autoload_configs</p>
+<ul>
+<li>modules.conf.xml</li>
+</ul>
+<pre><code class="language-xml">&lt;configuration name=&quot;modules.conf&quot; description=&quot;Modules&quot;&gt;
+   &lt;modules&gt;
+ 
+     &lt;!-- Loggers (I'd load these first) --&gt;
+     &lt;load module=&quot;mod_console&quot;/&gt;
+     &lt;load module=&quot;mod_logfile&quot;/&gt;
+ 
+     &lt;!-- XML Interfaces --&gt;
+     &lt;load module=&quot;mod_xml_rpc&quot;/&gt;
+ 
+     &lt;!-- Event Handlers --&gt;
+     &lt;load module=&quot;mod_cdr_csv&quot;/&gt;
+     &lt;load module=&quot;mod_event_socket&quot;/&gt;
+ 
+     &lt;!-- Endpoints --&gt;
+     &lt;load module=&quot;mod_sofia&quot;/&gt;
+     &lt;load module=&quot;mod_loopback&quot;/&gt;
+ 
+     &lt;!-- Applications --&gt;
+     &lt;!--load module=&quot;mod_signalwire&quot;/--&gt;
+     &lt;load module=&quot;mod_commands&quot;/&gt;
+     &lt;load module=&quot;mod_conference&quot;/&gt;
+     &lt;load module=&quot;mod_db&quot;/&gt;
+     &lt;load module=&quot;mod_dptools&quot;/&gt;
+     &lt;load module=&quot;mod_expr&quot;/&gt;
+     &lt;load module=&quot;mod_hash&quot;/&gt;
+     &lt;load module=&quot;mod_esf&quot;/&gt;
+ 
+     &lt;!-- Dialplan Interfaces --&gt;
+     &lt;load module=&quot;mod_dialplan_xml&quot;/&gt;
+ 
+     &lt;!-- Codec Interfaces --&gt;
+ 
+     &lt;!-- File Format Interfaces --&gt;
+     &lt;load module=&quot;mod_sndfile&quot;/&gt;
+     &lt;load module=&quot;mod_native_file&quot;/&gt;
+ 
+     &lt;!-- Third party modules --&gt;
+ 
+   &lt;/modules&gt;
+&lt;/configuration&gt;
+</code></pre>
+<ul>
+<li>sofia.conf.xml</li>
+</ul>
+<pre><code class="language-xml">&lt;configuration name=&quot;sofia.conf&quot; description=&quot;sofia Endpoint&quot;&gt;
+	&lt;global_settings&gt;
+	  &lt;param name=&quot;log-level&quot; value=&quot;0&quot;/&gt;
+	  &lt;param name=&quot;tracelevel&quot; value=&quot;DEBUG&quot;/&gt;
+	&lt;/global_settings&gt;
+	&lt;profiles&gt;
+	  &lt;X-PRE-PROCESS cmd=&quot;include&quot; data=&quot;../sip_profiles/*.xml&quot;/&gt;
+	&lt;/profiles&gt;
+&lt;/configuration&gt;
+</code></pre>
+<ul>
+<li>switch.conf.xml</li>
+</ul>
+<pre><code class="language-xml">&lt;configuration name=&quot;switch.conf&quot; description=&quot;Core Configuration&quot;&gt;
+   &lt;settings&gt;
+     &lt;param name=&quot;colorize-console&quot; value=&quot;true&quot;/&gt;
+ 
+     &lt;!-- Max number of sessions to allow at any given time --&gt;
+     &lt;param name=&quot;max-sessions&quot; value=&quot;1000&quot;/&gt;
+     &lt;!--Most channels to create per second --&gt;
+     &lt;param name=&quot;sessions-per-second&quot; value=&quot;30&quot;/&gt;
+ 
+     &lt;!-- Default Global Log Level - value is one of debug,info,notice,warning,err,crit,alert --&gt;
+     &lt;param name=&quot;loglevel&quot; value=&quot;debug&quot;/&gt;
+ 
+     &lt;!-- RTP port range --&gt;
+     &lt;param name=&quot;rtp-start-port&quot; value=&quot;16384&quot;/&gt;
+     &lt;param name=&quot;rtp-end-port&quot; value=&quot;32768&quot;/&gt;
+   &lt;/settings&gt;
+&lt;/configuration&gt;	
+</code></pre>
+</li>
+<li>
+<p>sofia_profiles</p>
+</li>
+</ul>
+<pre><code class="language-xml">&lt;profile name=&quot;internal&quot;&gt;
+  &lt;settings&gt;
+    &lt;param name=&quot;auth-calls&quot; value=&quot;true&quot;/&gt;
+    &lt;param name=&quot;apply-nat-acl&quot; value=&quot;nat.auto&quot;/&gt;
+
+    &lt;param name=&quot;debug&quot; value=&quot;0&quot;/&gt;
+    &lt;param name=&quot;sip-trace&quot; value=&quot;yes&quot;/&gt;
+
+    &lt;param name=&quot;dialplan&quot; value=&quot;XML&quot;/&gt;
+    &lt;param name=&quot;context&quot; value=&quot;default&quot;/&gt;
+    &lt;param name=&quot;codec-prefs&quot; value=&quot;$${global_codec_prefs}&quot;/&gt;
+
+    &lt;param name=&quot;rtp-ip&quot; value=&quot;$${local_ip_v4}&quot;/&gt;
+    &lt;param name=&quot;sip-ip&quot; value=&quot;$${local_ip_v4}&quot;/&gt;
+    &lt;param name=&quot;ext-rtp-ip&quot; value=&quot;auto-nat&quot;/&gt;
+    &lt;param name=&quot;ext-sip-ip&quot; value=&quot;auto-nat&quot;/&gt;
+    &lt;param name=&quot;sip-port&quot; value=&quot;$${internal_sip_port}&quot;/&gt;
+  &lt;/settings&gt;
+&lt;/profile&gt;
+
+</code></pre>
+<ul>
+<li>
+<p>directory</p>
+</li>
+<li>
+<p>dialplan</p>
+</li>
+</ul>
+<h2 id="问题"><a class="header" href="#问题">问题</a></h2>
+<ul>
+<li>FreeSWITCH的配置包括几个核心的部分，分别完成什么功能？</li>
+<li>X-PRE-PROCESS代表什么，如何注释？</li>
+<li>加载配置文件是按什么继续加载的？</li>
+<li>FreeSWITCH报错中提示配置错误的行数是指的哪个文件？</li>
+<li>启动里加载的模块在哪里配置？</li>
+<li>CPS是什么意思，在哪里配置？</li>
+<li>最大并发数在哪里配置？</li>
+<li>RTP的端口范围在哪里配置？</li>
+</ul>
+<hr />
+<p><strong>参考链接</strong></p>
+<ul>
+<li><a href="https://freeswitch.org/confluence/display/FREESWITCH/Default+Configuration">参考链接-1</a></li>
+<li><a href="https://freeswitch.org/confluence/display/FREESWITCH/Configuring+FreeSWITCH">参考链接-2</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../ch2/4.1-编译.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../ch2/4.3-分机.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../ch2/4.1-编译.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../ch2/4.3-分机.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
